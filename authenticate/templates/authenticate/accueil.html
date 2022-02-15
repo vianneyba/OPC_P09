@@ -1,0 +1,24 @@
+{% extends "litreview/base.html" %}
+
+{% block title %}Page d'accueil{% endblock %}
+
+{% block body %}
+    <div class="col-6">
+        
+        <h1>Inscrivez-vous maintenant</h1>
+        <div class="mx-auto mt-6" style="width: 50%;">
+            <a href="{% url 'authenticate:register' %}" class="btn btn-primary">S'inscrire</a>
+        </div>
+    </div>
+    <div class="col-6">
+        <h1 class="text-center">Connectez-vous</h1>
+        <form method="post" action="{% url 'authenticate:login' %}">
+            <p>{{ message }}</p>
+            {{ form.as_p }}
+            {% csrf_token %}
+            <div class="mx-auto" style="width: 50%;">
+                <input class="btn btn-primary" type="submit" value="Se connecter">
+            </div>
+        </form>
+    </div>
+{% endblock %}

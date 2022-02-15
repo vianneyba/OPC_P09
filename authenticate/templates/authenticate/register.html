@@ -1,0 +1,40 @@
+{% extends "litreview/base.html" %}
+
+{% block title %}Formulaire d'inscription{% endblock %}
+
+{% block body %}
+<form method="post" action="{% url 'authenticate:register' %}">
+    {{ form.as_p }}
+    {% csrf_token %}
+    <a class="btn btn-primary" href="{% url 'authenticate:login' %}">Retourner</a>
+    <input class="btn btn-primary" type="submit" value="S'inscrire">
+</form>
+
+
+
+
+
+  <!-- {% csrf_token %}
+    <p>Inscrivez-vous</p>
+    <div class="form-group">
+      <input type="text" class="form-control" 
+      id="user-name" name="user-name" 
+        placeholder="Nom d'utilisateur">
+    </div>
+    <div class="form-group">
+      <input type="password" class="form-control" 
+      id="user-password" name="user-password"
+        placeholder="Mot de passe">
+    </div>
+    <div class="form-group">
+        <input type="password" class="form-control" 
+            id="user-password-confim" name="user-password-confim"
+            placeholder="Conﬁrmer mot de passe">
+    </div>
+    <div>
+    <p>{%if errors %}{{ errors }}{% endif %}</p>
+    </div>
+    <input class="btn btn-primary" type="submit" value="Retourner">
+    <input class="btn btn-primary" type="submit" value="S'inscrire">
+  </form> -->
+{% endblock %}

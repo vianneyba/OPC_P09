@@ -1,0 +1,43 @@
+body {
+    background-color: #34A58C;
+}
+
+.navbar {
+    background-color:#15514F;
+    height: 70px;
+}
+
+table {
+    border: 0px solid;
+  }
+td {
+    text-align: center;
+  }
+
+.table-borderless > tbody > tr > td,
+.table-borderless > tbody > tr > th,
+.table-borderless > tfoot > tr > td,
+.table-borderless > tfoot > tr > th,
+.table-borderless > thead > tr > td,
+.table-borderless > thead > tr > th {
+    border: none;
+}
+
+fieldset {
+    border-radius: 15px;
+    background-color:#1D726F;
+    padding:16px;
+    margin: 20px;	
+}
+legend {
+    text-align: center;
+}
+
+.errorlist {
+    list-style: none;
+    background: #3399ff;
+    padding: 10px;
+}
+.errorlist li {
+    color: red;
+}
