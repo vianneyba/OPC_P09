@@ -1,0 +1,16 @@
+{% extends "litreview/base.html" %}
+
+{% block title %}ne plus suivre{% endblock %}
+
+{% block body %}
+<h1>Êtes-vous sûr ?</h1>
+<p>Voulez-vous vraiment ne plus suivre <strong>{{ link.followed_user.username }}</strong>?</p>
+<div class="d-inline">
+    <form method="post">
+        {% csrf_token %}
+        <button class="btn btn-danger">OUI</button>
+        <a href="{% url 'review:subscription' %}" class="btn btn-secondary">NON</a>
+    </form>
+</div>
+
+{% endblock %}

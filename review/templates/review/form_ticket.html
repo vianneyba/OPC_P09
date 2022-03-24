@@ -1,0 +1,17 @@
+{% extends "litreview/base.html" %}
+
+{% block title %}Créer un ticket{% endblock %}
+
+{% block body %}
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form method="post" action="" enctype="multipart/form-data">
+            {{ form.as_p }}
+            {% csrf_token %}
+            <div class="mx-auto" style="width: 50%;">
+                <input class="btn btn-primary" type="submit" value="Envoyer">
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

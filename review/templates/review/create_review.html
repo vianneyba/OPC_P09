@@ -1,0 +1,25 @@
+{% extends "litreview/base.html" %}
+{% load django_bootstrap5 %}
+
+{% block title %}Créer une critique{% endblock %}
+
+{% block body %}
+<h1 class="text-center">Créer une critique</h1>
+<form method="post" action="" enctype="multipart/form-data">
+{% csrf_token %}
+    <fieldset class="form-group">
+        <legend>Ticket</legend>
+        {% bootstrap_form ticket_form %}
+    </fieldset>
+    
+    <fieldset class="form-group">
+        <legend>Critique</legend>
+        {% bootstrap_form review_form %}
+    </fieldset>
+
+    <div class="mx-auto" style="width: 50%;">
+        <input class="btn btn-primary" type="submit" value="Envoyer">
+    </div>
+
+</form>
+{% endblock %}
