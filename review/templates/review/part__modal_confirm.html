@@ -1,0 +1,27 @@
+<div id="modal_delete_review" class="modal">
+    <div class="container">
+        <div class="modal-header">
+            <h5 class="modal-title">Modal title</h5>
+        </div>
+        <div class="modal-body">
+            {% if post.content_type == 'REVIEW' %}
+                <p>Voulez-vous vraiment effacer la critique</p>
+            {% elif post.content_type == 'TICKET' %}
+                <p>Voulez-vous vraiment effacer le ticket</p>
+            {% endif %}
+        </div>
+      
+        <div class="clearfix">
+            <button 
+                type="button" 
+                onclick="document.getElementById('modal_delete_review').style.display='none'" 
+                class="btn btn-secondary">Cancel
+            </button>
+            {% if post.content_type == 'REVIEW' %}
+                <a class="btn btn-danger" href="{% url 'review:delete-review' ticket.pk %}">Delete</a>
+            {% elif post.content_type == 'TICKET' %}
+                <a class="btn btn-danger" href="{% url 'review:delete-ticket' ticket.pk %}">Delete</a>
+            {% endif %}
+        </div>
+    </div>
+</div>

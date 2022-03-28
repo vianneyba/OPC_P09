@@ -33,8 +33,7 @@ class ReviewForm(forms.ModelForm):
         fields = ('headline', 'rating', 'body')
         widgets = {
             'rating': forms.RadioSelect(attrs={
-                'class': 'form-control',
-                'placeholder':'Titre'}),
+                'class': 'd-flex form-check form-check-inline'}),
             'headline': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder':'Titre'}),

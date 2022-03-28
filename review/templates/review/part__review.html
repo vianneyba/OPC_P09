@@ -20,12 +20,18 @@
             </div>
             {% if not my_posts %}
                 {% include 'review/part__ticket.html' with ticket=post.ticket %}
-            {% else %}
-                <a class="btn btn-success" href="">Modifier</a>
-                <a class="btn btn-danger" href="">Effacer</a>
+            {% elif post.user == user %}
+                <a class="btn btn-success" href="{% url 'review:update-review' post.pk %}">Modifier</a>
+                <button 
+                    class="btn btn-danger"
+                    onclick="document.getElementById('modal_delete_review').style.display='block'">Effacer
+                </button>
             {% endif %}
         </div>
     </div>
+
+    {% include 'review/part__modal_confirm.html' with ticket=post%}
+    
 {% elif post.content_type == 'TICKET' %}
     {% include 'review/part__ticket.html' with ticket=post %}
 {% endif %}

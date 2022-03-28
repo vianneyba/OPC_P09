@@ -1,18 +1,35 @@
 from itertools import chain
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from review.models import UserFollows, Review, Ticket
 from review.forms import SubscriptionForm, TicketForm, ReviewForm
 from django.db.models import Value, Q, CharField
+from datetime import date
 
+def aggregation_tickets_reviews(tickets, reviews):
+    tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+    reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+
+    posts = sorted(
+        chain(reviews, tickets),
+        key=lambda post: post.time_created,
+        reverse=True
+    )
+
+    return posts
+
+
+@login_required()
 def view_my_post(request):
     html_template = './review/accueil.html'
     reviews = Review.objects.filter(user=request.user)
+    tickets = Ticket.objects.filter(
+        user=request.user).order_by('-time_created')
     context = {
         'my_posts': True,
-        'reviews': reviews
+        'posts': aggregation_tickets_reviews(tickets, reviews)
     }
     return render(request, html_template, context)
 
@@ -24,20 +41,11 @@ def acceuil(request):
     reviews = Review.objects.filter(
         Q(user__id__in=followed_users) |
         Q(ticket__user=request.user)).order_by('-time_created')
-    reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
     tickets= Ticket.objects.filter(
-            user__id__in=followed_users).order_by('-time_created')
-    tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
-    # tickets = Ticket.objects.filter(user__id=request.user.id)
-
-    posts = sorted(
-        chain(reviews, tickets),
-        key=lambda post: post.time_created,
-        reverse=True
-    )
+            user__id__in=followed_users, closed_date = None).order_by('-time_created')
 
     context = {
-        'posts': posts,
+        'posts': aggregation_tickets_reviews(tickets, reviews),
     }
 
     return render(request, html_template, context)
@@ -56,13 +64,73 @@ def create_ticket(request):
     return render(request, html_template, context={'form': form})
 
 @login_required()
+def delete_ticket(request, pk):
+    ticket = Ticket.objects.get(pk=pk)
+    ticket.delete()
+
+    return redirect('review:view-my-post')
+
+
+@login_required()
+def delete_review(request, pk):
+    review = Review.objects.get(pk=pk)
+    review.ticket.closed_date = None
+    review.ticket.save()
+    review.delete()
+
+    return redirect('review:view-my-post')
+
+def update_review(request, pk):
+    html_template = './review/create_review.html'
+    review = get_object_or_404(Review, id=pk)
+    form = ReviewForm(instance=review)
+
+    context = {
+        'title_page': 'with_ticket',
+        'review_form': form,
+        'ticket': ticket
+    }
+
+    return render(request, html_template, context)
+
+@login_required()
+def create_review_by_ticket(request, pk):
+    html_template = './review/create_review.html'
+    ticket = get_object_or_404(Ticket, id=pk)
+    form = ReviewForm()
+    
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.ticket = ticket
+            review.user = request.user
+            review.save()
+            ticket.closed_date = date.today()
+            ticket.save()
+            print("enregistrement")
+            return redirect('review:accueil-review')
+    
+    context = {
+        'title_page': 'with_ticket',
+        'review_form': form,
+        'ticket': ticket
+    }
+
+    return render(request, html_template, context)
+
+@login_required()
 def create_review(request):
     html_template = './review/create_review.html'
     review_form = ReviewForm()
     ticket_form = TicketForm()
 
     return render(request, html_template,
-        {'review_form':review_form, 'ticket_form':ticket_form})
+        {
+            'title_page': 'without_ticket',
+            'review_form':review_form,
+            'ticket_form':ticket_form
+        })
 
 @login_required()
 def subscription(request):

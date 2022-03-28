@@ -7,10 +7,14 @@
 <h1 class="text-center">Créer une critique</h1>
 <form method="post" action="" enctype="multipart/form-data">
 {% csrf_token %}
-    <fieldset class="form-group">
-        <legend>Ticket</legend>
-        {% bootstrap_form ticket_form %}
-    </fieldset>
+    {% if title_page == 'without_ticket' %}
+        <fieldset class="form-group">
+            <legend>Ticket</legend>
+            {% bootstrap_form ticket_form %}
+        </fieldset>
+    {% elif title_page == 'with_ticket'  %}
+        {% include 'review/part__ticket.html' with ticket=ticket %}
+    {% endif %}
     
     <fieldset class="form-group">
         <legend>Critique</legend>
