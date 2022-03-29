@@ -1,12 +1,12 @@
 from itertools import chain
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from review.models import UserFollows, Review, Ticket
 from review.forms import SubscriptionForm, TicketForm, ReviewForm
 from django.db.models import Value, Q, CharField
 from datetime import date
+
 
 def aggregation_tickets_reviews(tickets, reviews):
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
@@ -21,6 +21,23 @@ def aggregation_tickets_reviews(tickets, reviews):
     return posts
 
 
+def save_ticket(form, user):
+    ticket = form.save(commit=False)
+    ticket.user = user
+    ticket.closed_date = date.today()
+    ticket.save()
+    return ticket
+
+
+def save_review(form, ticket, user):
+    review = form.save(commit=False)
+    review.ticket = ticket
+    review.user = user
+    review.save()
+    print(review.id)
+    return review
+
+
 @login_required()
 def view_my_post(request):
     html_template = './review/accueil.html'
@@ -33,22 +50,27 @@ def view_my_post(request):
     }
     return render(request, html_template, context)
 
+
 @login_required()
 def acceuil(request):
     html_template = './review/accueil.html'
-    followed_users = list(UserFollows.objects.filter(user=request.user).values_list('followed_user__id', flat=True))
+    followed_users = list(
+        UserFollows.objects.filter(user=request.user)
+        .values_list('followed_user__id', flat=True))
     followed_users.append(request.user.id)
     reviews = Review.objects.filter(
         Q(user__id__in=followed_users) |
         Q(ticket__user=request.user)).order_by('-time_created')
-    tickets= Ticket.objects.filter(
-            user__id__in=followed_users, closed_date = None).order_by('-time_created')
+    tickets = Ticket.objects.filter(
+        user__id__in=followed_users, closed_date=None
+        ).order_by('-time_created')
 
     context = {
         'posts': aggregation_tickets_reviews(tickets, reviews),
     }
 
     return render(request, html_template, context)
+
 
 @login_required()
 def create_ticket(request):
@@ -62,6 +84,7 @@ def create_ticket(request):
             ticket.save()
             return redirect('review:accueil-review')
     return render(request, html_template, context={'form': form})
+
 
 @login_required()
 def delete_ticket(request, pk):
@@ -80,44 +103,50 @@ def delete_review(request, pk):
 
     return redirect('review:view-my-post')
 
+
+@login_required()
 def update_review(request, pk):
     html_template = './review/create_review.html'
     review = get_object_or_404(Review, id=pk)
-    form = ReviewForm(instance=review)
+    ticket = review.ticket
+    form_review = ReviewForm(instance=review)
+    if request.method == 'POST':
+        form_review = ReviewForm(request.POST, instance=review)
+        if form_review.is_valid():
+            save_review(form_review, ticket, request.user)
+            return redirect('review:accueil-review')
 
     context = {
         'title_page': 'with_ticket',
-        'review_form': form,
+        'review_form': form_review,
         'ticket': ticket
     }
 
     return render(request, html_template, context)
+
 
 @login_required()
 def create_review_by_ticket(request, pk):
     html_template = './review/create_review.html'
     ticket = get_object_or_404(Ticket, id=pk)
-    form = ReviewForm()
-    
+    form_review = ReviewForm()
+
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
-            review = form.save(commit=False)
-            review.ticket = ticket
-            review.user = request.user
-            review.save()
+            save_review(form_review, ticket, request.user)
             ticket.closed_date = date.today()
             ticket.save()
-            print("enregistrement")
             return redirect('review:accueil-review')
-    
+
     context = {
         'title_page': 'with_ticket',
-        'review_form': form,
+        'review_form': form_review,
         'ticket': ticket
     }
 
     return render(request, html_template, context)
+
 
 @login_required()
 def create_review(request):
@@ -125,12 +154,23 @@ def create_review(request):
     review_form = ReviewForm()
     ticket_form = TicketForm()
 
-    return render(request, html_template,
-        {
-            'title_page': 'without_ticket',
-            'review_form':review_form,
-            'ticket_form':ticket_form
-        })
+    if request.method == 'POST':
+        review_form = ReviewForm(request.POST)
+        ticket_form = TicketForm(request.POST, request.FILES)
+        if review_form.is_valid() and ticket_form.is_valid():
+            ticket = save_ticket(ticket_form, request.user)
+            save_review(review_form, ticket, request.user)
+
+            return redirect('review:accueil-review')
+
+    context = {
+        'title_page': 'without_ticket',
+        'review_form': review_form,
+        'ticket_form': ticket_form
+    }
+
+    return render(request, html_template, context)
+
 
 @login_required()
 def subscription(request):
@@ -144,14 +184,19 @@ def subscription(request):
         if form.is_valid():
             subscription = UserFollows()
             subscription.user = request.user
-            subscription.followed_user = User.objects.get(username=form.cleaned_data['username'])
+            subscription.followed_user = User.objects.get(
+                username=form.cleaned_data['username']
+            )
             subscription.save()
 
-    return render(request, html_template,
-        {'form': form,
+    context = {
+        'form': form,
         'followed_user': followed_user,
         'follower_user': follower_user
-        })
+    }
+
+    return render(request, html_template, context)
+
 
 def unfollow(request, pk):
     html_template = './review/unfollow.html'

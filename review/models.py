@@ -1,23 +1,32 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
+from uuid import uuid4
+import os
+
+
+def rename_file(instance, filename):
+    upload_to = 'image'
+    ext = filename.split('.')[-1]
+    if instance.pk:
+        filename = '{}.{}'.format(instance.pk, ext)
+    else:
+        filename = '{}.{}'.format(uuid4().hex, ext)
+    return os.path.join(upload_to, filename)
 
 
 class Ticket(models.Model):
     title = models.CharField('Titre', max_length=128)
     description = models.TextField(
-        'Description', 
-        blank=True, 
+        'Description',
+        blank=True,
         max_length=2048)
     user = models.ForeignKey(
         User,
         related_name='owner',
         on_delete=models.CASCADE,
         verbose_name='Propriétaire ')
-    image = models.ImageField(
-        null=True,
-        upload_to='image')
+    image = models.ImageField(upload_to=rename_file, max_length=255, null=True)
     closed_date = models.DateTimeField(blank=True, null=True)
     time_created = models.DateTimeField(auto_now_add=True)
 
@@ -56,6 +65,4 @@ class UserFollows(models.Model):
         verbose_name='Utilisateur')
 
     class Meta:
-        # ensures we don't get multiple UserFollows instances
-        # for unique user-user_followed pairs
         unique_together = ('user', 'followed_user', )

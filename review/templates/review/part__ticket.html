@@ -1,8 +1,18 @@
-<div class="ticket">
-    <p>Ticket {{ ticket.user }}</p>
-    <p>{{ ticket.title }}</p>
-    <p>{{ ticket.description }}</p>
-    <img src="{{ ticket.image.url }}" alt="">
+{% load markdown_extras %}
+
+<div class="justify-content-md-center ticket">
+    <div>
+        Ticket {{ ticket.user }}
+    </div>
+    <div clas="row justify-content-center">
+        <h1>{{ ticket.title }}</h1>
+    </div>
+    <div>
+        {{ ticket.description | markdown | safe }}
+    </div>
+    <div>
+        <img src="{{ ticket.image.url }}" alt="" width="350">
+    </div>
 
     {% if title_page is None and ticket.closed_date is None %}
         <div class="row justify-content-md-center mt-3">

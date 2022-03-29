@@ -2,11 +2,11 @@
 {% block title %}Page Flux{% endblock %}
 
 {% block body %}
-<div class="row">
-    <div class="col-6">
+<div class="row justify-content-md-center">
+    <div class="col-md-3">
         <a href="{% url 'review:create-ticket' %}" class="btn btn-primary">Demander une critique</a>
     </div>
-    <div class="col-6">
+    <div class="col-md-3">
         <a href="{% url 'review:create-review' %}" class="btn btn-primary">Créer une critique</a>
     </div>
 </div>

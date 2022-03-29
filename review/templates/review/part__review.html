@@ -1,5 +1,7 @@
+{% load markdown_extras %}
+
 {% if post.content_type == 'REVIEW' %}
-    <div class="card text-white bg-dark border-light">
+    <div class="card text-white bg-dark border-light mt-3">
         <div class="card-header">
             <p>
                 {% if post.user == user %}
@@ -10,13 +12,13 @@
                     le {{ post.time_created }}
             </p>
             <div class="card-body ">
-                <h5 class="card-title">{{ post.headline }}</h5>
-                <div class="col-md-3">
-                    {{ post.rating }}
-                </div>
+                <h5 class="card-title">
+                    {{ post.headline }}
+                    <img class="ml-3" src="/image/media/{{post.rating}}stars.gif" alt="" width=100>
+                </h5>
             </div>
             <div class="cold-md-10">
-                {{ post.body }}
+                {{ post.body | markdown | safe }}
             </div>
             {% if not my_posts %}
                 {% include 'review/part__ticket.html' with ticket=post.ticket %}
