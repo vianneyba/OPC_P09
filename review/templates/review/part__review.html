@@ -1,39 +1,45 @@
 {% load markdown_extras %}
 
-{% if post.content_type == 'REVIEW' %}
-    <div class="card text-white bg-dark border-light mt-3">
-        <div class="card-header">
-            <p>
-                {% if post.user == user %}
-                    Vous avez publié une critique
-                {% else %}
-                    {{ post.user }}
-                {% endif %}
-                    le {{ post.time_created }}
-            </p>
-            <div class="card-body ">
-                <h5 class="card-title">
-                    {{ post.headline }}
-                    <img class="ml-3" src="/image/media/{{post.rating}}stars.gif" alt="" width=100>
-                </h5>
+<div class="card text-white bg-dark border-light mt-3">
+    <div class="card-header">
+        <p>
+            {% if review.user == user %}
+                Vous avez publié une critique
+            {% else %}
+                {{ review.user }}
+            {% endif %}
+                le {{ review.time_created }}
+        </p>
+        <div class="card-body ">
+            <h5 class="card-title">
+                {{ review.headline }}
+                <img class="ml-3" src="/image/media/{{review.rating}}stars.gif" alt="" width=100>
+            </h5>
+        </div>
+        <div class="cold-md-10">
+            {{ review.body | markdown | safe }}
+        </div>
+        {% if not my_posts %}
+            {% include 'review/part__ticket.html' with ticket=review.ticket %}
+        {% elif review.user == user %}
+        <div class="row">
+            <div class="col-md-2">
+                <a class="btn btn-success" href="{% url 'review:update-review' review.pk %}">Modifier</a>
             </div>
-            <div class="cold-md-10">
-                {{ post.body | markdown | safe }}
-            </div>
-            {% if not my_posts %}
-                {% include 'review/part__ticket.html' with ticket=post.ticket %}
-            {% elif post.user == user %}
-                <a class="btn btn-success" href="{% url 'review:update-review' post.pk %}">Modifier</a>
+            <div class="col-md-2">
                 <button 
                     class="btn btn-danger"
-                    onclick="document.getElementById('modal_delete_review').style.display='block'">Effacer
+                    onclick="document.getElementById('delete-review-{{review.pk}}').style.display='block'">Effacer
                 </button>
-            {% endif %}
+            </div>
+            <div class="col-md-2">
+                <a 
+                    style="display:none"
+                    id="delete-review-{{review.pk}}"
+                    class="btn btn-danger"
+                    href="{% url 'review:delete-review' review.pk %}">Delete</a>   
+            </div>
         </div>
+        {% endif %}
     </div>
-
-    {% include 'review/part__modal_confirm.html' with ticket=post%}
-    
-{% elif post.content_type == 'TICKET' %}
-    {% include 'review/part__ticket.html' with ticket=post %}
-{% endif %}
+</div>

@@ -21,10 +21,10 @@ def aggregation_tickets_reviews(tickets, reviews):
     return posts
 
 
-def save_ticket(form, user, update=False):
+def save_ticket(form, user, closed_date=False):
     ticket = form.save(commit=False)
     ticket.user = user
-    if update is False:
+    if closed_date:
         ticket.closed_date = date.today()
     ticket.save()
     return ticket
@@ -41,7 +41,7 @@ def save_review(form, ticket, user):
 @login_required()
 def view_my_post(request):
     html_template = './review/accueil.html'
-    reviews = Review.objects.filter(user=request.user)
+    reviews = Review.objects.filter(user=request.user).order_by('-time_created')
     tickets = Ticket.objects.filter(
         user=request.user).order_by('-time_created')
     context = {
@@ -65,6 +65,12 @@ def acceuil(request):
         user__id__in=followed_users, closed_date=None
         ).order_by('-time_created')
 
+    for user in followed_users:
+        print(f'user.username = {user}')
+    for review in reviews:
+        print(f'review.headline = {review.headline}')
+    for ticket in tickets:
+        print(f'ticket.title= {ticket.title}')
     context = {
         'posts': aggregation_tickets_reviews(tickets, reviews),
     }
@@ -79,9 +85,7 @@ def create_ticket(request):
     if request.method == 'POST':
         form = TicketForm(request.POST, request.FILES)
         if form.is_valid():
-            ticket = form.save(commit=False)
-            ticket.user = request.user
-            ticket.save()
+            save_ticket(form, request.user)
             return redirect('review:accueil-review')
     return render(request, html_template, context={'form': form})
 
@@ -94,7 +98,7 @@ def update_ticket(request, pk):
     if request.method == 'POST':
         form_ticket = TicketForm(request.POST, request.FILES, instance=ticket)
         if form_ticket.is_valid():
-            save_ticket(form_ticket, request.user, update=True)
+            save_ticket(form_ticket, request.user)
             return redirect('review:accueil-review')
     context = {
         'ticket': ticket,
@@ -150,8 +154,8 @@ def create_review_by_ticket(request, pk):
     form_review = ReviewForm()
 
     if request.method == 'POST':
-        form = ReviewForm(request.POST)
-        if form.is_valid():
+        form_review = ReviewForm(request.POST)
+        if form_review.is_valid():
             save_review(form_review, ticket, request.user)
             ticket.closed_date = date.today()
             ticket.save()

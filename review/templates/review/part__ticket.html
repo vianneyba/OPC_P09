@@ -30,9 +30,17 @@
 
             {% if ticket.closed_date == None %}
             <div class="col-md-2">
-                <button class="btn btn-danger"
-                    onclick="document.getElementById('modal_delete_review').style.display='block'">Effacer
-                </button>
+                <a 
+                    class="btn btn-danger"
+                    onclick="document.getElementById('delete-{{ post.pk}}').style.display='block'">Effacer
+                </a>
+            </div>
+            <div class="col-md-2">
+                <a 
+                    style="display:none"
+                    id="delete-{{ post.pk}}"
+                    class="btn btn-danger"
+                    href="{% url 'review:delete-ticket' post.pk %}">Delete</a>   
             </div>
             {% endif %}
         </div>
