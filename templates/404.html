@@ -1,0 +1,15 @@
+{% extends "litreview/base.html" %}
+{% block title %}404{% endblock %}
+
+{% block body %}
+{% if type == 'ticket' %}
+    <h1>le Ticket n'existe pas</h1>
+    <p>désoler, le ticket n'existe pas</p>
+{% elif type == 'review' %}
+    <h1>la critique n'existe pas</h1>
+    <p>désoler, la critique n'existe pas</p>
+{% elif type == 'user' %}
+    <h1>l'utilisateur n'existe pas</h1>
+    <p>désoler, l'utilisateur n'existe pas</p>
+{% endif %}
+{% endblock %}

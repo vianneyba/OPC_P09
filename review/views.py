@@ -93,7 +93,14 @@ def create_ticket(request):
 @login_required()
 def update_ticket(request, pk):
     html_template = './review/form_ticket.html'
-    ticket = get_object_or_404(Ticket, id=pk)
+    try:
+        ticket = Ticket.objects.get(id=pk)
+    except Ticket.DoesNotExist:
+        return render(
+            request,
+            '404.html',
+            context={'type': 'ticket'}
+        )
     form_ticket = TicketForm(instance=ticket)
     if request.method == 'POST':
         form_ticket = TicketForm(request.POST, request.FILES, instance=ticket)
@@ -110,7 +117,14 @@ def update_ticket(request, pk):
 
 @login_required()
 def delete_ticket(request, pk):
-    ticket = Ticket.objects.get(pk=pk)
+    try:
+        ticket = Ticket.objects.get(pk=pk)
+    except Ticket.DoesNotExist:
+        return render(
+            request,
+            '404.html',
+            context={'type': 'ticket'}
+        )
     ticket.delete()
 
     return redirect('review:view-my-post')
@@ -118,7 +132,14 @@ def delete_ticket(request, pk):
 
 @login_required()
 def delete_review(request, pk):
-    review = Review.objects.get(pk=pk)
+    try:
+        review = Review.objects.get(pk=pk)
+    except Review.DoesNotExist:
+        return render(
+            request,
+            '404.html',
+            context={'type': 'review'}
+        )
     review.ticket.closed_date = None
     review.ticket.save()
     review.delete()
@@ -129,7 +150,15 @@ def delete_review(request, pk):
 @login_required()
 def update_review(request, pk):
     html_template = './review/create_review.html'
-    review = get_object_or_404(Review, id=pk)
+    try:
+        review = Review.objects.get(id=pk)
+    except Review.DoesNotExist:
+        return render(
+            request,
+            '404.html',
+            context={'type': 'review'}
+        )
+
     ticket = review.ticket
     form_review = ReviewForm(instance=review)
     if request.method == 'POST':
@@ -150,7 +179,14 @@ def update_review(request, pk):
 @login_required()
 def create_review_by_ticket(request, pk):
     html_template = './review/create_review.html'
-    ticket = get_object_or_404(Ticket, id=pk)
+    try:
+        ticket = Ticket.objects.get(id=pk)
+    except Ticket.DoesNotExist:
+        return render(
+            request,
+            '404.html',
+            context={'type': 'ticket'}
+        )
     form_review = ReviewForm()
 
     if request.method == 'POST':
@@ -201,29 +237,39 @@ def subscription(request):
     follower_user = UserFollows.objects.filter(followed_user=request.user)
     form = SubscriptionForm()
 
-    if request.method == 'POST':
-        form = SubscriptionForm(request.POST)
-        if form.is_valid():
-            subscription = UserFollows()
-            subscription.user = request.user
-            subscription.followed_user = User.objects.get(
-                username=form.cleaned_data['username']
-            )
-            subscription.save()
-
     context = {
         'form': form,
         'followed_user': followed_user,
-        'follower_user': follower_user
+        'follower_user': follower_user,  
     }
+
+    if request.method == 'POST':
+        form = SubscriptionForm(request.POST)
+        if form.is_valid():
+            try:
+                subscription = UserFollows()
+                subscription.user = request.user
+                subscription.followed_user = User.objects.get(
+                    username=form.cleaned_data['username']
+                )
+                subscription.save()
+            except User.DoesNotExist:
+                context['error'] = "l\'utilisateur n'existe pas"
+                return render(request, html_template, context)
 
     return render(request, html_template, context)
 
 
 def unfollow(request, pk):
     html_template = './review/unfollow.html'
-    link = UserFollows.objects.get(pk=pk)
-
+    try:
+        link = UserFollows.objects.get(pk=pk)
+    except UserFollows.DoesNotExist:
+        return render(
+            request,
+            '404.html',
+            context={'type': 'user'}
+        )
     if request.method == 'POST':
         if request.user == link.user:
             link.delete()

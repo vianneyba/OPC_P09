@@ -8,9 +8,12 @@
         <div class="row justify-content-center">
             <div>
                 <form method="post" action="">
-                        {{ form.as_p }}
-                        {% csrf_token %}
-                        <input class="btn btn-primary" type="submit" value="Envoyer">
+                    <div class="alert alert-danger" role="alert">
+                        <small id="emailHelp" class="form-text text-muted">{{error}}</small>
+                    </div>
+                    {{ form.as_p }}
+                    {% csrf_token %}
+                    <input class="btn btn-primary" type="submit" value="Envoyer">
                 </form>
             </div>
             <div class="mt-5">
