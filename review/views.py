@@ -21,10 +21,11 @@ def aggregation_tickets_reviews(tickets, reviews):
     return posts
 
 
-def save_ticket(form, user):
+def save_ticket(form, user, update=False):
     ticket = form.save(commit=False)
     ticket.user = user
-    ticket.closed_date = date.today()
+    if update is False:
+        ticket.closed_date = date.today()
     ticket.save()
     return ticket
 
@@ -34,7 +35,6 @@ def save_review(form, ticket, user):
     review.ticket = ticket
     review.user = user
     review.save()
-    print(review.id)
     return review
 
 
@@ -84,6 +84,24 @@ def create_ticket(request):
             ticket.save()
             return redirect('review:accueil-review')
     return render(request, html_template, context={'form': form})
+
+
+@login_required()
+def update_ticket(request, pk):
+    html_template = './review/form_ticket.html'
+    ticket = get_object_or_404(Ticket, id=pk)
+    form_ticket = TicketForm(instance=ticket)
+    if request.method == 'POST':
+        form_ticket = TicketForm(request.POST, request.FILES, instance=ticket)
+        if form_ticket.is_valid():
+            save_ticket(form_ticket, request.user, update=True)
+            return redirect('review:accueil-review')
+    context = {
+        'ticket': ticket,
+        'form': form_ticket,
+        'mod': 'update'
+    }
+    return render(request, html_template, context=context)
 
 
 @login_required()

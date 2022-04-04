@@ -25,7 +25,7 @@
     {% if ticket.user == user and my_posts == True %}
         <div class="row justify-content-md-center">
             <div class="col-md-2">
-                <a class="btn btn-success" href="">Modifier</a>
+                <a class="btn btn-success" href="{% url 'review:update-ticket' ticket.pk %}">Modifier</a>
             </div>
 
             {% if ticket.closed_date == None %}
