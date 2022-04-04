@@ -1,15 +1,14 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.contrib.auth.password_validation import validate_password
-from django.core import exceptions
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from . import forms
 
+
 def login_page(request):
+    html_template = 'authenticate/accueil.html'
     form = forms.LoginForm()
-    message = ''
+    context = {}
     if request.method == 'POST':
         form = forms.LoginForm(request.POST)
         if form.is_valid():
@@ -21,14 +20,13 @@ def login_page(request):
                 login(request, user)
                 return redirect('review:accueil-review')
             else:
-                message = 'Identifiants invalides.'
-    return render(request, 'authenticate/accueil.html',
-        context={'form': form, 'message': message}
-    )
+                context['message'] = 'Identifiants invalides.'
+    context['form'] = form
+    return render(request, html_template, context=context)
+
 
 def register_page(request):
     form = forms.RegisterForm()
-    message = ''
 
     if request.method == 'POST':
         form = forms.RegisterForm(request.POST)
@@ -38,7 +36,10 @@ def register_page(request):
             password2 = form.cleaned_data['password_confirm']
             username = form.cleaned_data['username']
             if password1 != password2:
-                form.add_error('password', 'Les deux champs mot de passe ne correpondent pas')
+                form.add_error(
+                    'password',
+                    'Les deux champs mot de passe ne correpondent pas'
+                )
             else:
                 user = User.objects.create_user(username, '', password1)
                 user.save()
@@ -48,6 +49,7 @@ def register_page(request):
 
     return render(request, 'authenticate/register.html', {'form': form})
 
+
 def logout_page(request):
-	logout(request)
-	return redirect(reverse('authenticate:login'))
+    logout(request)
+    return redirect(reverse('authenticate:login'))

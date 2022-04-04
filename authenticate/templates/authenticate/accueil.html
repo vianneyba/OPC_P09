@@ -4,7 +4,6 @@
 
 {% block body %}
     <div class="col-6">
-        
         <h1>Inscrivez-vous maintenant</h1>
         <div class="mx-auto mt-6" style="width: 50%;">
             <a href="{% url 'authenticate:register' %}" class="btn btn-primary">S'inscrire</a>
@@ -13,7 +12,11 @@
     <div class="col-6">
         <h1 class="text-center">Connectez-vous</h1>
         <form method="post" action="{% url 'authenticate:login' %}">
-            <p>{{ message }}</p>
+            {% if message %}
+                <div class="alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+            {% endif %}
             {{ form.as_p }}
             {% csrf_token %}
             <div class="mx-auto" style="width: 50%;">
