@@ -18,5 +18,5 @@ urlpatterns = [
     path('ticket/update/<int:pk>', views.update_ticket, name='update-ticket'),
     path('subscription/', views.subscription, name='subscription'),
     path('subscription/<int:pk>', views.unfollow, name='unfollow'),
-    path('my_post/', views.view_my_post, name='view-my-post'),
+    path('user/<int:pk>', views.view_by_user, name='view-by-user'),
 ]

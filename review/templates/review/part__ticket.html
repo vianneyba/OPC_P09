@@ -1,47 +1,41 @@
 {% load markdown_extras %}
 
 <div class="justify-content-md-center ticket">
-    <div>
-        Ticket {{ ticket.user }}
-    </div>
-    <div clas="row justify-content-center">
-        <h1>{{ ticket.title }}</h1>
-    </div>
-    <div>
-        {{ ticket.description | markdown | safe }}
-    </div>
-    <div>
-        <img src="{{ ticket.image.url }}" alt="" width="350">
+    <div class="row">
+        <div class="col-md-3">
+            <img src="{{ ticket.image.url }}" alt=""class="img-fluid">
+        </div>
+        <div class="col-md-8">
+            <p> Ticket {{ ticket.user }}</p>
+            <h1>{{ ticket.title }}</h1>
+            <p> {{ ticket.description | markdown | safe }}</p>
+        </div>
     </div>
 
     {% if title_page is None and ticket.closed_date is None %}
         <div class="row justify-content-md-center mt-3">
-            <div class="col">
+            <div class="col-md-2">
                 <a class="btn btn-success" href="{% url 'review:create-review-by-ticket' ticket.pk %}">Créer une critique</a>
             </div>
-        </div>
-    {% endif %}
-
-    {% if ticket.user == user and my_posts == True %}
-        <div class="row justify-content-md-center">
-            <div class="col-md-2">
-                <a class="btn btn-success" href="{% url 'review:update-ticket' ticket.pk %}">Modifier</a>
-            </div>
-
-            {% if ticket.closed_date == None %}
-            <div class="col-md-2">
-                <a 
-                    class="btn btn-danger"
-                    onclick="document.getElementById('delete-{{ post.pk}}').style.display='block'">Effacer
-                </a>
-            </div>
-            <div class="col-md-2">
-                <a 
-                    style="display:none"
-                    id="delete-{{ post.pk}}"
-                    class="btn btn-danger"
-                    href="{% url 'review:delete-ticket' post.pk %}">Delete</a>   
-            </div>
+            {% if ticket.user == user and my_posts == True %}
+                <div class="col-md-2">
+                    <a class="btn btn-success" href="{% url 'review:update-ticket' ticket.pk %}">Modifier</a>
+                </div>
+                {% if ticket.closed_date == None %}
+                    <div class="col-md-2">
+                        <a 
+                            class="btn btn-danger"
+                            onclick="document.getElementById('delete-{{ post.pk}}').style.display='block'">Effacer
+                        </a>
+                    </div>
+                    <div class="col-md-2">
+                        <a 
+                            style="display:none"
+                            id="delete-{{ post.pk}}"
+                            class="btn btn-danger"
+                            href="{% url 'review:delete-ticket' post.pk %}">Delete</a>   
+                    </div>
+                {% endif %}
             {% endif %}
         </div>
     {% endif %}

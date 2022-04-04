@@ -39,11 +39,11 @@ def save_review(form, ticket, user):
 
 
 @login_required()
-def view_my_post(request):
+def view_by_user(request, pk):
     html_template = './review/accueil.html'
-    reviews = Review.objects.filter(user=request.user).order_by('-time_created')
+    reviews = Review.objects.filter(user=pk).order_by('-time_created')
     tickets = Ticket.objects.filter(
-        user=request.user).order_by('-time_created')
+        user=pk).order_by('-time_created')
     context = {
         'my_posts': True,
         'posts': aggregation_tickets_reviews(tickets, reviews)
@@ -180,7 +180,7 @@ def create_review(request):
         review_form = ReviewForm(request.POST)
         ticket_form = TicketForm(request.POST, request.FILES)
         if review_form.is_valid() and ticket_form.is_valid():
-            ticket = save_ticket(ticket_form, request.user)
+            ticket = save_ticket(ticket_form, request.user, closed_date=True)
             save_review(review_form, ticket, request.user)
 
             return redirect('review:accueil-review')
