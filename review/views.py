@@ -6,7 +6,9 @@ from review.models import UserFollows, Review, Ticket
 from review.forms import SubscriptionForm, TicketForm, ReviewForm
 from django.db.models import Value, Q, CharField
 from datetime import date
+from django.core.paginator import Paginator
 
+number_of_pages = 10
 
 def aggregation_tickets_reviews(tickets, reviews):
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
@@ -44,10 +46,16 @@ def view_by_user(request, pk):
     reviews = Review.objects.filter(user=pk).order_by('-time_created')
     tickets = Ticket.objects.filter(
         user=pk).order_by('-time_created')
+
+    paginator = Paginator(aggregation_tickets_reviews(tickets, reviews), number_of_pages)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'posts': aggregation_tickets_reviews(tickets, reviews),
+        'posts': page_obj,
         'title_page': 'by_user'
     }
+    
     if request.user.id == pk:
         context['my_posts'] = True
     return render(request, html_template, context)
@@ -73,8 +81,13 @@ def acceuil(request):
         print(f'review.headline = {review.headline}')
     for ticket in tickets:
         print(f'ticket.title= {ticket.title}')
+
+    paginator = Paginator(aggregation_tickets_reviews(tickets, reviews), number_of_pages)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'posts': aggregation_tickets_reviews(tickets, reviews),
+        'posts': page_obj,
     }
 
     return render(request, html_template, context)
