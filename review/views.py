@@ -45,9 +45,11 @@ def view_by_user(request, pk):
     tickets = Ticket.objects.filter(
         user=pk).order_by('-time_created')
     context = {
-        'my_posts': True,
-        'posts': aggregation_tickets_reviews(tickets, reviews)
+        'posts': aggregation_tickets_reviews(tickets, reviews),
+        'title_page': 'by_user'
     }
+    if request.user.id == pk:
+        context['my_posts'] = True
     return render(request, html_template, context)
 
 

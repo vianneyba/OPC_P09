@@ -8,10 +8,7 @@ import os
 def rename_file(instance, filename):
     upload_to = 'image'
     ext = filename.split('.')[-1]
-    if instance.pk:
-        filename = '{}.{}'.format(instance.pk, ext)
-    else:
-        filename = '{}.{}'.format(uuid4().hex, ext)
+    filename = '{}.{}'.format(uuid4().hex, ext)
     return os.path.join(upload_to, filename)
 
 
