@@ -2,14 +2,19 @@
 
 <div class="card text-white bg-dark border-light mt-3">
     <div class="card-header">
-        <p>
-            {% if review.user == user %}
+        <div class="row">
+            <div class="col-md-4">
+                {% if review.user == user %}
                 Vous avez publié une critique
-            {% else %}
-                {{ review.user }}
-            {% endif %}
-                le {{ review.time_created }}
-        </p>
+                {% else %}
+                <a href="{% url 'review:view-by-user' review.user.pk %}">{{ review.user | title }}</a> a publié une critique
+                {% endif %}
+            </div>
+            <div class="d-flex justify-content-end">
+                {{ review.time_created | date:"G:i, d F Y" }}
+            </div>
+        </div>
+
         <div class="card-body ">
             <h5 class="card-title">
                 {{ review.headline }}

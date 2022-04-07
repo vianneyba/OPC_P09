@@ -3,11 +3,13 @@
 
 {% block body %}
 <div class="row justify-content-md-center">
-    <div class="col-md-3">
-        <a href="{% url 'review:create-ticket' %}" class="btn btn-primary">Demander une critique</a>
+
+    <div class="justify-content-end col-md-5">
+        <a href="{% url 'review:create-ticket' %}" class="btn btn-primary px-12">Demander une critique</a>
     </div>
-    <div class="col-md-3">
-        <a href="{% url 'review:create-review' %}" class="btn btn-primary">Créer une critique</a>
+
+    <div class="col-md-5">
+        <a href="{% url 'review:create-review' %}" class="btn btn-primary px-12">Créer une critique</a>
     </div>
 </div>
 
