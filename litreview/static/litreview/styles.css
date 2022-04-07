@@ -19,13 +19,11 @@ table, th, td {
 }
 
 fieldset {
-    border-radius: 15px;
     background-color:#1D726F;
     padding:16px;
-    margin: 20px;	
 }
 legend {
-    text-align: center;
+    font-size: 1.2rem;
 }
 
 .errorlist {
@@ -71,6 +69,11 @@ legend {
 
 .mt-12 {
     margin-top: 6rem; 
+}
+
+.rating .form-check {
+    padding-right: 2.2rem;
+    padding-left: 2.2rem;
 }
 
 .px-12 {

@@ -4,18 +4,18 @@
 
 {% block body %}
 
-<div class="row">
-    <div class="col-4">
+<div class="row justify-content-center">
     {% if mod == 'update' %}
+    <div class="col-4">
             <img src="{{ ticket.image.url }}" alt="" class="img-fluid">
-    {% endif%}
     </div>
+    {% endif%}
 
     <div class="col-8">
         <form method="post" action="" enctype="multipart/form-data">
             {{ form.as_p }}
             {% csrf_token %}
-            <div class="mx-auto">
+            <div class="d-flex justify-content-end">
                 <input class="btn btn-primary" type="submit" value="Envoyer">
             </div>
         </form>

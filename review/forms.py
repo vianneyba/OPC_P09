@@ -23,7 +23,6 @@ class SubscriptionForm(forms.Form):
         max_length=63,
         label='',
         widget=forms.TextInput(attrs={
-            # 'class': 'form-control',
             'placeholder':'Nom d\'utilisateur',
             'class': 'form-control'})
     )
@@ -34,7 +33,7 @@ class ReviewForm(forms.ModelForm):
         fields = ('headline', 'rating', 'body')
         widgets = {
             'rating': forms.RadioSelect(attrs={
-                'class': 'd-flex form-check form-check-inline'}),
+                'class': 'd-flex form-check form-check-inline rating'}),
             'headline': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder':'Titre'}),
