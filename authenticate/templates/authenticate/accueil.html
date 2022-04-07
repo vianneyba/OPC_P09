@@ -4,13 +4,18 @@
 
 {% block body %}
     <div class="col-6">
-        <h1>Inscrivez-vous maintenant</h1>
-        <div class="mx-auto mt-6" style="width: 50%;">
-            <a href="{% url 'authenticate:register' %}" class="btn btn-primary">S'inscrire</a>
+        <div class=mt-12>
+
+            <h1>Inscrivez-vous maintenant</h1>
+            <div class="row justify-content-center">
+                <div class="col-md-2 mt-3">
+                    <a href="{% url 'authenticate:register' %}" class="btn btn-primary px-5 py-2">S'inscrire</a>
+                </div>
+            </div>
         </div>
     </div>
     <div class="col-6">
-        <h1 class="text-center">Connectez-vous</h1>
+        <h1 class="text-center m-5">Connectez-vous</h1>
         <form method="post" action="{% url 'authenticate:login' %}">
             {% if message %}
                 <div class="alert alert-danger" role="alert">
@@ -19,8 +24,10 @@
             {% endif %}
             {{ form.as_p }}
             {% csrf_token %}
-            <div class="mx-auto" style="width: 50%;">
-                <input class="btn btn-primary" type="submit" value="Se connecter">
+            <div class="row justify-content-end">
+                <div class="col-md-2 mt-2">
+                    <input class="btn btn-primary" type="submit" value="Se connecter">
+                </div>
             </div>
         </form>
     </div>

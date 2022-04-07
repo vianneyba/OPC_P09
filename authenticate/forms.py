@@ -5,7 +5,7 @@ class LoginForm(forms.Form):
     error_css_class = 'alert alert-warning'
     username = forms.CharField(
         max_length=63,
-        label='Nom d\'utilisateur',
+        label='',
         validators=[MinLengthValidator(5)],
         widget=forms.TextInput(attrs={
             'class': 'form-control',
@@ -13,7 +13,7 @@ class LoginForm(forms.Form):
     )
     password = forms.CharField(
         max_length=63,
-        label='Mot de passe',
+        label='',
         widget=forms.TextInput(attrs={
             'class': 'form-control',
             'placeholder': 'Mot de passe',
@@ -23,7 +23,7 @@ class LoginForm(forms.Form):
 class RegisterForm(LoginForm):
     password_confirm = forms.CharField(
         max_length=63,
-        label='Conﬁrmer mot de passe',
+        label='',
         widget=forms.TextInput(attrs={
             'class': 'form-control',
             'placeholder': 'Conﬁrmer mot de passe',
