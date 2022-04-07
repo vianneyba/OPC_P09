@@ -4,7 +4,12 @@
 {% block title %}Créer une critique{% endblock %}
 
 {% block body %}
+{% if update %}
+<h1 class="text-center">Modiﬁer votre critique</h1>
+{% else %}
 <h1 class="text-center">Créer une critique</h1>
+{% endif %}
+
 <form method="post" action="" enctype="multipart/form-data">
 {% csrf_token %}
 
@@ -16,7 +21,10 @@
             </div>
         </fieldset>
     {% elif title_page == 'with_ticket'  %}
-        {% include 'review/part__ticket.html' with ticket=ticket %}
+        <fieldset class="form-group">
+            <legend>Vous êtes en train de poster en réponse à</legend>
+            {% include 'review/part__ticket.html' with ticket=ticket %}
+        </fieldset>
     {% endif %}
     
     <fieldset class="form-group">

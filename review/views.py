@@ -123,9 +123,9 @@ def update_ticket(request, pk):
             save_ticket(form_ticket, request.user)
             return redirect('review:accueil-review')
     context = {
+        'update': True,
         'ticket': ticket,
-        'form': form_ticket,
-        'mod': 'update'
+        'form': form_ticket
     }
     return render(request, html_template, context=context)
 
@@ -183,6 +183,7 @@ def update_review(request, pk):
             return redirect('review:accueil-review')
 
     context = {
+        'update': True,
         'title_page': 'with_ticket',
         'review_form': form_review,
         'ticket': ticket

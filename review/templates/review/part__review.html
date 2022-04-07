@@ -27,22 +27,22 @@
         {% if not my_posts %}
             {% include 'review/part__ticket.html' with ticket=review.ticket %}
         {% elif review.user == user %}
-        <div class="row justify-content-md-center mt-3">
+        <div class="row justify-content-md-end">
+            <div class="col-md-2">
+                <a
+                style="display:none"
+                id="delete-review-{{review.pk}}"
+                class="btn btn-danger"
+                href="{% url 'review:delete-review' review.pk %}">Delete</a>
+            </div>
             <div class="col-md-2">
                 <a class="btn btn-success" href="{% url 'review:update-review' review.pk %}">Modifier</a>
             </div>
             <div class="col-md-2">
                 <button 
-                    class="btn btn-danger"
-                    onclick="document.getElementById('delete-review-{{review.pk}}').style.display='block'">Effacer
+                class="btn btn-danger"
+                onclick="document.getElementById('delete-review-{{review.pk}}').style.display='block'">Effacer
                 </button>
-            </div>
-            <div class="col-md-2">
-                <a 
-                    style="display:none"
-                    id="delete-review-{{review.pk}}"
-                    class="btn btn-danger"
-                    href="{% url 'review:delete-review' review.pk %}">Delete</a>   
             </div>
         </div>
         {% endif %}

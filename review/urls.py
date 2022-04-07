@@ -19,4 +19,5 @@ urlpatterns = [
     path('subscription/', views.subscription, name='subscription'),
     path('subscription/<int:pk>', views.unfollow, name='unfollow'),
     path('user/<int:pk>', views.view_by_user, name='view-by-user'),
+    path('search/', views.search_ticket_review, name='search-word'),
 ]

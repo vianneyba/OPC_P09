@@ -5,20 +5,29 @@
 {% block body %}
 
 <div class="row justify-content-center">
-    {% if mod == 'update' %}
-    <div class="col-4">
-            <img src="{{ ticket.image.url }}" alt="" class="img-fluid">
+    <div class="d-flex justify-content-center mb-4">
+        {% if update %}
+            <h1>Modiﬁer votre ticket</h1>
+        {% else %}
+            <h1>Créer un ticket</h1>
+        {% endif %}
     </div>
-    {% endif%}
-
-    <div class="col-8">
-        <form method="post" action="" enctype="multipart/form-data">
-            {{ form.as_p }}
-            {% csrf_token %}
-            <div class="d-flex justify-content-end">
-                <input class="btn btn-primary" type="submit" value="Envoyer">
+    <fieldset class="d-flex justify-content-center p-2">
+        {% if update and ticket.image %}
+            <div class="col-md-4">
+                <img src="{{ ticket.image.url }}" alt="" class="img-fluid p-4">
             </div>
-        </form>
-    </div>
+        {% endif%}
+
+        <div class="col-md-8 m-3">
+            <form method="post" action="" enctype="multipart/form-data">
+                {{ form.as_p }}
+                {% csrf_token %}
+                <div class="d-flex justify-content-end">
+                    <input class="btn btn-primary" type="submit" value="Envoyer">
+                </div>
+            </form>
+        </div>
+    </fieldset>
 </div>
 {% endblock %}
