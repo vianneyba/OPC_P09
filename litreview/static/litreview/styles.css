@@ -7,20 +7,15 @@ body {
     height: 70px;
 }
 
-table {
-    border: 0px solid;
-}
-td {
-    text-align: center;
+table, th, td {
+    border-collapse: collapse;
+    border: 1px solid;
+    border-color: black;
 }
 
-.table-borderless > tbody > tr > td,
-.table-borderless > tbody > tr > th,
-.table-borderless > tfoot > tr > td,
-.table-borderless > tfoot > tr > th,
-.table-borderless > thead > tr > td,
-.table-borderless > thead > tr > th {
-    border: none;
+.align-right {
+    text-align: end;
+    width: 60px;
 }
 
 fieldset {

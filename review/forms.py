@@ -21,10 +21,11 @@ class TicketForm(forms.ModelForm):
 class SubscriptionForm(forms.Form):
     username = forms.CharField(
         max_length=63,
-        label='Nom d\'utilisateur',
+        label='',
         widget=forms.TextInput(attrs={
             # 'class': 'form-control',
-            'placeholder':'Nom d\'utilisateur'})
+            'placeholder':'Nom d\'utilisateur',
+            'class': 'form-control'})
     )
 
 class ReviewForm(forms.ModelForm):
