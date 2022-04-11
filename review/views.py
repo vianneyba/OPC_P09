@@ -145,9 +145,10 @@ def delete_ticket(request, pk):
             '404.html',
             context={'type': 'ticket'}
         )
-    ticket.delete()
+    if ticket.user.id == request.user.id:
+        ticket.delete()
 
-    return redirect('review:view-my-post')
+    return redirect('review:view-by-user', request.user.id)
 
 
 @login_required()
@@ -160,11 +161,12 @@ def delete_review(request, pk):
             '404.html',
             context={'type': 'review'}
         )
-    review.ticket.closed_date = None
-    review.ticket.save()
-    review.delete()
+    if review.user.id == request.user.id:
+        review.ticket.closed_date = None
+        review.ticket.save()
+        review.delete()
 
-    return redirect('review:view-my-post')
+    return redirect('review:view-by-user', request.user.id)
 
 
 @login_required()
