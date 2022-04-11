@@ -45,8 +45,13 @@ def save_review(form, ticket, user):
 def view_by_user(request, pk):
     html_template = './review/accueil.html'
     reviews = Review.objects.filter(user=pk).order_by('-time_created')
-    tickets = Ticket.objects.filter(
-        user=pk).order_by('-time_created')
+
+    if request.user.id != pk:
+        tickets = Ticket.objects.filter(
+        user=pk, closed_date=None).order_by('-time_created')
+    else:
+        tickets = Ticket.objects.filter(
+            user=pk).order_by('-time_created')
 
     paginator = Paginator(
         aggregation_tickets_reviews(tickets, reviews),
