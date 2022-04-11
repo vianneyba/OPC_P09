@@ -1,11 +1,10 @@
-from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from . import views
 
-app_name= 'authenticate'
+app_name = 'authenticate'
 
 urlpatterns = [
-	path('login/', views.login_page, name='login'),
-	path('register/', views.register_page, name='register'),
-	path('logout/', views.logout_page, name='logout'),
+    path('login/', views.login_page, name='login'),
+    path('register/', views.register_page, name='register'),
+    path('logout/', views.logout_page, name='logout'),
 ]

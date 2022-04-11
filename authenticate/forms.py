@@ -1,6 +1,7 @@
 from django import forms
 from django.core.validators import MinLengthValidator
 
+
 class LoginForm(forms.Form):
     error_css_class = 'alert alert-warning'
     username = forms.CharField(
@@ -9,7 +10,7 @@ class LoginForm(forms.Form):
         validators=[MinLengthValidator(5)],
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder':'Nom d\'utilisateur'})
+            'placeholder': 'Nom d\'utilisateur'})
     )
     password = forms.CharField(
         max_length=63,
@@ -19,6 +20,7 @@ class LoginForm(forms.Form):
             'placeholder': 'Mot de passe',
             'type': 'password'})
     )
+
 
 class RegisterForm(LoginForm):
     password_confirm = forms.CharField(

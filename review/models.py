@@ -23,7 +23,11 @@ class Ticket(models.Model):
         related_name='owner',
         on_delete=models.CASCADE,
         verbose_name='Propriétaire ')
-    image = models.ImageField(upload_to=rename_file, max_length=255, null=True, blank=True)
+    image = models.ImageField(
+        upload_to=rename_file,
+        max_length=255,
+        null=True,
+        blank=True)
     closed_date = models.DateTimeField(blank=True, null=True)
     time_created = models.DateTimeField(auto_now_add=True)
 

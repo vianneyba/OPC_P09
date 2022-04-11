@@ -1,6 +1,7 @@
 from django import forms
 from . import models
 
+
 class TicketForm(forms.ModelForm):
     class Meta:
         model = models.Ticket
@@ -10,22 +11,24 @@ class TicketForm(forms.ModelForm):
                 'class': 'form-control',
                 'cols': 80,
                 'rows': 10,
-                'placeholder':'Description'}),
+                'placeholder': 'Description'}),
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder':'Titre'}),
+                'placeholder': 'Titre'}),
             'image': forms.FileInput(attrs={
                 'class': 'form-control'})
         }
+
 
 class SubscriptionForm(forms.Form):
     username = forms.CharField(
         max_length=63,
         label='',
         widget=forms.TextInput(attrs={
-            'placeholder':'Nom d\'utilisateur',
+            'placeholder': 'Nom d\'utilisateur',
             'class': 'form-control'})
     )
+
 
 class ReviewForm(forms.ModelForm):
     class Meta:
@@ -36,10 +39,10 @@ class ReviewForm(forms.ModelForm):
                 'class': 'd-flex form-check form-check-inline rating'}),
             'headline': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder':'Titre'}),
+                'placeholder': 'Titre'}),
             'body': forms.Textarea(attrs={
                 'class': 'form-control',
                 'cols': 80,
                 'rows': 10,
-                'placeholder':'Description'})
+                'placeholder': 'Description'})
         }

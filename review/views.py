@@ -1,5 +1,5 @@
 from itertools import chain
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from review.models import UserFollows, Review, Ticket
@@ -9,6 +9,7 @@ from datetime import date
 from django.core.paginator import Paginator
 
 number_of_pages = 5
+
 
 def aggregation_tickets_reviews(tickets, reviews):
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
@@ -47,7 +48,9 @@ def view_by_user(request, pk):
     tickets = Ticket.objects.filter(
         user=pk).order_by('-time_created')
 
-    paginator = Paginator(aggregation_tickets_reviews(tickets, reviews), number_of_pages)
+    paginator = Paginator(
+        aggregation_tickets_reviews(tickets, reviews),
+        number_of_pages)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -55,7 +58,7 @@ def view_by_user(request, pk):
         'posts': page_obj,
         'title_page': 'by_user'
     }
-    
+
     if request.user.id == pk:
         context['my_posts'] = True
     return render(request, html_template, context)
@@ -82,7 +85,9 @@ def acceuil(request):
     for ticket in tickets:
         print(f'ticket.title= {ticket.title}')
 
-    paginator = Paginator(aggregation_tickets_reviews(tickets, reviews), number_of_pages)
+    paginator = Paginator(
+        aggregation_tickets_reviews(tickets, reviews),
+        number_of_pages)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -256,7 +261,7 @@ def subscription(request):
     context = {
         'form': form,
         'followed_user': followed_user,
-        'follower_user': follower_user,  
+        'follower_user': follower_user,
     }
 
     if request.method == 'POST':
@@ -300,11 +305,14 @@ def unfollow(request, pk):
 def search_ticket_review(request):
     html_template = './review/accueil.html'
     search = request.GET.get('search')
-    reviews = Review.objects.filter(headline__contains=search).order_by('-time_created')
+    reviews = Review.objects.filter(
+        headline__contains=search).order_by('-time_created')
     tickets = Ticket.objects.filter(
         title__contains=search, closed_date=None).order_by('-time_created')
 
-    paginator = Paginator(aggregation_tickets_reviews(tickets, reviews), number_of_pages)
+    paginator = Paginator(
+        aggregation_tickets_reviews(tickets, reviews),
+        number_of_pages)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
